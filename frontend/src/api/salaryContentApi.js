@@ -1,20 +1,24 @@
 import axios from 'axios';
-import {baseApiUrl} from '../config/config';
+import { baseApiUrl } from '../config/config';
 
-class SalaryContentApi {
-    static get(url,year,month) {
-        return axios({
-            method: 'get',
-            url: `${baseApiUrl}${url}/getByDate?year=${year}&month=${month}`
-        })
+const getSalaryContent = async (url, year, month) => {
+    try {
+        const response = await axios.get(`${baseApiUrl}${url}/getByDate?year=${year}&month=${month}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching salary content:', error);
+        throw error;
     }
+};
 
-    static delete(url,id) {
-        return axios({
-            method: 'delete',
-            url: `${baseApiUrl}${url}/${id}`
-        })
+const deleteSalaryContent = async (url, id) => {
+    try {
+        await axios.delete(`${baseApiUrl}${url}/${id}`);
+        console.log('Successfully deleted salary content');
+    } catch (error) {
+        console.error('Error deleting salary content:', error);
+        throw error;
     }
-}
+};
 
-export default SalaryContentApi;
+export { getSalaryContent, deleteSalaryContent };

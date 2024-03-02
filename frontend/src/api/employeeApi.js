@@ -1,49 +1,56 @@
 import axios from "axios";
 import { baseApiUrl } from "../config/config";
 
-const employeeApiUrl = baseApiUrl + "employee/";
+const employeeApiUrl = `${baseApiUrl}employee/`;
 
 class EmployeeApi {
-  static getEmployees() {
-    return axios({
-      method: "get",
-      url: employeeApiUrl + "getEmployees"
-    });
+  static async getEmployees() {
+    try {
+      const response = await axios.get(`${employeeApiUrl}getEmployees`);
+      console.log(response.data,'get employee')
+      return response.data;
+    } catch (error) {
+      console.error("Error while fetching employees:", error);
+      throw error;
+    }
   }
 
-  static getEmployee(value) {
-    return axios({
-      method: "get",
-      url: `${employeeApiUrl}getEmployee?employeeSheetName=${value}`
-    });
+  static async getEmployee(value) {
+    try {
+      const response = await axios.get(
+        `${employeeApiUrl}getEmployee?employeeSheetName=${value}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error while fetching employee:", error);
+      throw error;
+    }
   }
 
-  static addEmployee(employee, lastRowNumber) {
-    return axios({
-      method: "post",
-      url: employeeApiUrl + "addEmployee",
-      data: {
+  static async addEmployee(employee, lastRowNumber) {
+    try {
+      const response = await axios.post(`${employeeApiUrl}addEmployee`, {
         employee,
         lastRowNumber
-      },
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error while adding employee:", error);
+      throw error;
+    }
   }
 
-  static changeEmployeeStatus(rowNumber, date) {
-    return axios({
-      method: "put",
-      url: employeeApiUrl + "disableEmployee",
-      data: {
+  static async changeEmployeeStatus(rowNumber, date) {
+    try {
+      const response = await axios.put(`${employeeApiUrl}disableEmployee`, {
         rowNumber,
         date
-      },
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error while changing employee status:", error);
+      throw error;
+    }
   }
 }
 

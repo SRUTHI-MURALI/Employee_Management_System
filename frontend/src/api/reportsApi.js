@@ -3,13 +3,14 @@ import { baseApiUrl } from "../config/config";
 
 const reportsApiUrl = baseApiUrl + "reports/";
 
-class ReportsApi {
-  static getReportsData() {
-    return axios({
-      method: "get",
-      url: reportsApiUrl + "getReports"
-    });
+const reportsApi = async () => {
+  try {
+    const response = await axios.get(reportsApiUrl + "getReports");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching reports:", error);
+    throw error;
   }
-}
+};
 
-export default ReportsApi;
+export default reportsApi;

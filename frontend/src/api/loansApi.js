@@ -1,24 +1,30 @@
 import axios from 'axios';
-import {baseApiUrl} from '../config/config';
+import { baseApiUrl } from '../config/config';
 
-const loansApiUrl = baseApiUrl + 'loan/'
+const loansApiUrl = baseApiUrl + 'loan/';
 
-class LoansApi {
- 
-    static getLoansData() {
-        return axios({
-            method: 'get',
-            url: loansApiUrl + 'getLoansData'
-        })
-    }
+const loansApi = () => {
+    const getLoansData = async () => {
+        try {
+            const response = await axios.get(loansApiUrl + 'getLoansData');
+            return response.data;
+        } catch (error) {
+            console.error('Error while fetching loans data:', error);
+            throw error;
+        }
+    };
 
-    static addBulk(loanData) {
-        return axios({
-            method: 'post',
-            url: loansApiUrl + 'addBulk',
-            data: loanData
-        })
-    }
-}
+    const addBulk = async (loanData) => {
+        try {
+            const response = await axios.post(loansApiUrl + 'addBulk', loanData);
+            return response.data;
+        } catch (error) {
+            console.error('Error while adding bulk loans:', error);
+            throw error;
+        }
+    };
 
-export default LoansApi;
+    return { getLoansData, addBulk };
+};
+
+export default loansApi;

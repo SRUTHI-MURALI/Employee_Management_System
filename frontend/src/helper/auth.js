@@ -1,26 +1,32 @@
+import { useEffect } from 'react';
 import { CLIENT_ID, gapi } from "../config/config";
 
-class Auth {
-  static init() {
-    gapi.load("auth2", () => {
-      gapi.auth2.init({
-        client_id: CLIENT_ID
+const Auth = () => {
+  useEffect(() => {
+    const initAuth = () => {
+      gapi.load("auth2", () => {
+        gapi.auth2.init({
+          client_id: CLIENT_ID
+        });
       });
-    });
-  }
+    };
+    initAuth();
+  }, []);
 
-  static signOut() {
+  const signOut = () => {
     const auth2 = gapi.auth2.getAuthInstance();
     auth2.signOut().then(() => {
       console.log("User signed out.");
       localStorage.clear();
     });
-  }
+  };
 
-  static setStorage(googleUser) {
+  const setStorage = (googleUser) => {
     localStorage.setItem("email", googleUser.profileObj.email);
     localStorage.setItem("token", googleUser.tokenId);
-  }
-}
+  };
+
+  return null; // Since Auth component doesn't render anything
+};
 
 export default Auth;

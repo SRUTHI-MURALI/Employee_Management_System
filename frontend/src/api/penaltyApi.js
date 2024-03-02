@@ -1,18 +1,22 @@
 import axios from 'axios';
-import {baseApiUrl} from '../config/config';
+import { baseApiUrl } from '../config/config';
 
-const penaltyApi = baseApiUrl + 'penalty'
+const penaltyApi = () => {
+    const penaltyApiUrl = baseApiUrl + 'penalty';
 
-class PenaltyApi {
+    const addBulk = async (penalties) => {
+        try {
+            const response = await axios.post(`${penaltyApiUrl}/addBulk`, penalties);
+            return response.data;
+        } catch (error) {
+            console.error('Error adding bulk penalties:', error);
+            throw error;
+        }
+    };
 
-    static addBulk(penalties) {
-        return axios({
-            method: 'post',
-            url: penaltyApi + '/addBulk',
-            data: penalties
-        })
-    }
+    return {
+        addBulk
+    };
+};
 
-}
-
-export default PenaltyApi;
+export default penaltyApi;
