@@ -1,78 +1,85 @@
-import React, { Component } from "react";
-import { Field, reduxForm } from "redux-form";
-import DateTimePicker from "react-widgets/lib/DateTimePicker";
+import React, { useState } from "react";
 import moment from "moment";
-import momentLocalizer from "react-widgets-moment";
+// import DateTimePicker from "react-widgets/lib/DateTimePicker";
 
 moment.locale("en");
-momentLocalizer();
+// momentLocalizer(moment); // Uncomment if needed
 
-class RaiseSalaryForm extends Component {
-  reset = () => {
-    setTimeout(() => {
-      this.props.reset();
-    }, 100);
+const RaiseSalaryForm = ({ addSalaryRaise }) => {
+  const [formData, setFormData] = useState({
+    date: "",
+    amount: "",
+    description: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  render() {
-    const renderDateTimePicker = ({ input: { onChange, value }, showTime }) => (
-      <DateTimePicker
-        onChange={onChange}
-        format="DD MMM YYYY"
-        time={showTime}
-        value={!value ? null : new Date(value)}
-      />
-    );
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    addSalaryRaise(formData);
+    // Clear form data after submission
+    setFormData({
+      date: "",
+      amount: "",
+      description: "",
+    });
+  };
 
-    const { handleSubmit, addSalaryRaise } = this.props;
-    return (
-      <form onSubmit={handleSubmit(addSalaryRaise)}>
-        <label className="form-title"> Salary Raise</label>
-        <div className="form-group">
-          <label htmlFor="date">Date</label>
-          <Field
-            name="date"
-            component={renderDateTimePicker}
-            type="text"
-            className="form-control"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="amount">Amount</label>
-          <Field
-            name="amount"
-            component="input"
-            type="number"
-            parse={value => Number(value)}
-            className="form-control"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="description">Description</label>
-          <Field
-            name="description"
-            component="input"
-            type="text"
-            className="form-control"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="btn btn-primary submit-button"
-          onClick={this.reset}
-        >
-          Submit
-        </button>
-      </form>
-    );
-  }
-}
+  return (
+    <form onSubmit={handleSubmit}>
+      <label className="form-title">Salary Raise</label>
 
-RaiseSalaryForm = reduxForm({
-  form: "raiseSalaryForm"
-})(RaiseSalaryForm);
+      {/* Date */}
+      <div className="form-group">
+        <label htmlFor="date">Date</label>
+        <input
+          name="date"
+          value={formData.date}
+          onChange={handleChange}
+          type="date"
+          className="form-control"
+          required
+        />
+      </div>
+
+      {/* Amount */}
+      <div className="form-group">
+        <label htmlFor="amount">Amount</label>
+        <input
+          name="amount"
+          value={formData.amount}
+          onChange={handleChange}
+          type="number"
+          className="form-control"
+          required
+        />
+      </div>
+
+      {/* Description */}
+      <div className="form-group">
+        <label htmlFor="description">Description</label>
+        <input
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          type="text"
+          className="form-control"
+          required
+        />
+      </div>
+
+      {/* Submit Button */}
+      <button type="submit" className="btn btn-primary submit-button">
+        Submit
+      </button>
+    </form>
+  );
+};
 
 export default RaiseSalaryForm;

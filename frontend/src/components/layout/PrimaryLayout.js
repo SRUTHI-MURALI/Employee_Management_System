@@ -1,9 +1,9 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../../img/logo.png";
-import { Switch, Route, Redirect, Link } from "react-router-dom";
+import { Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
 import ReportsContainerComponent from "../../containers/ReportsContainerComponent";
 import EmployeesContainerComponent from "../../containers/EmployeesContainerComponent";
-import Auth from "../../helper/auth";
+import { Auth } from "../../helper/auth"; 
 import LoginContainerComponent from "../../containers/LoginContainerComponent";
 import EmployeeProfileContainerComponent from "../../containers/EmployeeProfileContainerComponent";
 import HomeContainerComponent from "../../containers/HomeContainerComponent";
@@ -15,120 +15,102 @@ import About from "../../components/about/About";
 import Privacy from "../../components/about/PrivacyPolicy";
 import Terms from "../about/TermsAndConditions";
 
-class PrimaryLayout extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentRoute: ""
-    };
-  }
+const PrimaryLayout = ({ loggedUser, removeLoggedUser, history }) => {
+  const [currentRoute, setCurrentRoute] = useState("");
 
-  logout = () => {
+  const location = useLocation();
+
+  const logout = () => {
     Auth.signOut();
-    this.props.removeLoggedUser();
+    removeLoggedUser();
   };
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      currentRoute: nextProps.history.location.pathname
-    });
-  }
+  useEffect(() => {
+    setCurrentRoute(location.pathname);
+  }, [location.pathname]);
 
-  componentWillMount() {
-    this.setState({
-      currentRoute: this.props.history.location.pathname
-    });
-  }
+  return (
+    <div className="wrapper">
+      <header className="" role="banner">
+        {loggedUser && (
+          <div className="container">
+            <div className="navbar navbar__container">
+              <Link to="/home">
+                <img src={logo} alt="EMS Mars logo" className="logo" />
+              </Link>
+              <ul className="navbar__menu">
+                <li className={currentRoute === "/home" ? "active" : ""}>
+                  <Link to="/home"> Home </Link>
+                </li>
 
-  render() {
-    const { loggedUser } = this.props;
-    const { currentRoute } = this.state;
-    return (
-      <div className="wrapper">
-        <header className="" role="banner">
-          {loggedUser && (
-            <div className="container">
-              <div className="navbar navbar__container">
-                <Link to="/home">
-                  <img src={logo} alt="EMS Mars logo" className="logo" />
-                </Link>
-                <ul className="navbar__menu">
-                  <li className={currentRoute === "/home" ? "active" : ""}>
-                    <Link to="/home"> Home </Link>
-                  </li>
+                <li className={currentRoute === "/employees" ? "active" : ""}>
+                  <Link to="/employees"> Employees </Link>
+                </li>
 
-                  <li className={currentRoute === "/employees" ? "active" : ""}>
-                    <Link to="/employees"> Employees </Link>
-                  </li>
+                <li className={currentRoute === "/reports" ? "active" : ""}>
+                  <Link to="/reports"> Reports </Link>
+                </li>
 
-                  <li className={currentRoute === "/reports" ? "active" : ""}>
-                    <Link to="/reports"> Reports </Link>
-                  </li>
+                <li className={currentRoute === "/loans" ? "active" : ""}>
+                  <Link to="/loans"> Loans </Link>
+                </li>
 
-                  <li className={currentRoute === "/loans" ? "active" : ""}>
-                    <Link to="/loans"> Loans </Link>
-                  </li>
+                <li className={currentRoute === "/salaries" ? "active" : ""}>
+                  <Link to="/salaries"> Salaries </Link>
+                </li>
 
-                  <li className={currentRoute === "/salaries" ? "active" : ""}>
-                    <Link to="/salaries"> Salaries </Link>
-                  </li>
-
-                  <li className={currentRoute === "/about" ? "active" : ""}>
-                    <Link to="/about"> About </Link>
-                  </li>
-                </ul>
-                <Link
-                  to="/login"
-                  onClick={this.logout}
-                  className="navbar__links"
-                >
-                  Sign out
-                </Link>
-              </div>
+                <li className={currentRoute === "/about" ? "active" : ""}>
+                  <Link to="/about"> About </Link>
+                </li>
+              </ul>
+              <Link
+                to="/login"
+                onClick={logout}
+                className="navbar__links"
+              >
+                Sign out
+              </Link>
             </div>
-          )}
-        </header>
-        <main>
-          <Switch>
-            <Route path="/home" component={HomeContainerComponent} />
-            <Route path="/login" component={LoginContainerComponent} />
-            <Route exact path="/loans" component={LoansContainerComponent} />
-            <Route
-              path="/salaries"
-              component={GenerateSalariesContainerComponent}
-            />
-            <Route
-              exact
-              path="/employees"
-              component={EmployeesContainerComponent}
-            />
-            <Route
-              path="/employees/:itemId"
-              component={EmployeeProfileContainerComponent}
-            />
-            <Route
-              exact
-              path="/reports"
-              component={ReportsContainerComponent}
-            />
-            <Route
-              exact
-              path="/reports/details"
-              component={ReportsDetailsContainerComponent}
-            />
-            <Route
-              path="/reports/details/:itemId"
-              component={EmployeeStatsContainerComponent}
-            />
-            <Route exact path="/about" component={About} />
-            <Route exact path="/terms" component={Terms} />
-            <Route exact path="/privacy" component={Privacy} />
-            <Redirect to="/login" />
-          </Switch>
-        </main>
-      </div>
-    );
-  }
-}
+          </div>
+        )}
+      </header>
+      <main>
+        <Routes>
+          <Route path="/home" element={<HomeContainerComponent />} />
+          <Route path="/login" element={<LoginContainerComponent />} />
+          <Route path="/loans" element={<LoansContainerComponent />} />
+          <Route
+            path="/salaries"
+            element={<GenerateSalariesContainerComponent />}
+          />
+          <Route
+            path="/employees"
+            element={<EmployeesContainerComponent />}
+          />
+          <Route
+            path="/employees/:itemId"
+            element={<EmployeeProfileContainerComponent />}
+          />
+          <Route
+            path="/reports"
+            element={<ReportsContainerComponent />}
+          />
+          <Route
+            path="/reports/details"
+            element={<ReportsDetailsContainerComponent />}
+          />
+          <Route
+            path="/reports/details/:itemId"
+            element={<EmployeeStatsContainerComponent />}
+          />
+          <Route path="/about" element={<About />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+      </main>
+    </div>
+  );
+};
 
 export default PrimaryLayout;

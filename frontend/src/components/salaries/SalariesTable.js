@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
-import ReactHTMLTableToExcel from "react-html-table-to-excel";
+// import ReactHTMLTableToExcel from "react-html-table-to-excel";
 
 const SalariesTable = ({ employeesSalaries }) => {
   const employeesDataList = employeesSalaries.map(item => {

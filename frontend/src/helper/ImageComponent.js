@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import Modal from "react-awesome-modal";
+// import Modal from "react-awesome-modal";
 
 class ImageComponent extends Component {
   state = { isOpen: false };

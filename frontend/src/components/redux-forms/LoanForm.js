@@ -1,99 +1,117 @@
-import React, { Component } from "react";
-import { Field, reduxForm } from "redux-form";
-import DateTimePicker from "react-widgets/lib/DateTimePicker";
+import React, { useState } from "react";
 import moment from "moment";
-import momentLocalizer from "react-widgets-moment";
 
 moment.locale("en");
-momentLocalizer();
+// momentLocalizer(moment);
 
-class LoanForm extends Component {
-  reset = () => {
-    setTimeout(() => {
-      this.props.reset();
-    }, 100);
+const LoanForm = ({ addLoan }) => {
+  const [formData, setFormData] = useState({
+    date: "",
+    amount: "",
+    installment: "",
+    unit: "",
+    description: ""
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
   };
-  render() {
-    const renderDateTimePicker = ({ input: { onChange, value }, showTime }) => (
-      <DateTimePicker
-        onChange={onChange}
-        format="DD MMM YYYY"
-        time={showTime}
-        value={!value ? null : new Date(value)}
-      />
-    );
 
-    const { handleSubmit, addLoan } = this.props;
-    return (
-      <form onSubmit={handleSubmit(addLoan)}>
-        <label className="form-title">Loan</label>
-        <div className="form-group">
-          <label htmlFor="date">Date</label>
-          <Field
-            name="date"
-            component={renderDateTimePicker}
-            type="text"
-            className="form-control"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="amount">Amount</label>
-          <Field
-            name="amount"
-            component="input"
-            type="number"
-            className="form-control"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="installment">Installment</label>
-          <Field
-            name="installment"
-            component="input"
-            type="number"
-            className="form-control"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="unit">Unit</label>
-          <Field
-            name="unit"
-            component="select"
-            className="form-control"
-            required
-          >
-            <option></option>
-            <option value="BAM">BAM</option>
-            <option value="$">$</option>
-          </Field>
-        </div>
-        <div className="form-group">
-          <label htmlFor="description">Description</label>
-          <Field
-            name="description"
-            component="input"
-            type="text"
-            className="form-control"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="btn btn-primary submit-button"
-          onClick={this.reset}
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    addLoan(formData);
+    // Clear form data after submission
+    setFormData({
+      date: "",
+      amount: "",
+      installment: "",
+      unit: "",
+      description: ""
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label className="form-title">Loan</label>
+
+      {/* Date */}
+      <div className="form-group">
+        <label htmlFor="date">Date</label>
+        <input
+          name="date"
+          value={formData.date}
+          onChange={handleChange}
+          type="date"
+          className="form-control"
+          required
+        />
+      </div>
+
+      {/* Amount */}
+      <div className="form-group">
+        <label htmlFor="amount">Amount</label>
+        <input
+          name="amount"
+          value={formData.amount}
+          onChange={handleChange}
+          type="number"
+          className="form-control"
+          required
+        />
+      </div>
+
+      {/* Installment */}
+      <div className="form-group">
+        <label htmlFor="installment">Installment</label>
+        <input
+          name="installment"
+          value={formData.installment}
+          onChange={handleChange}
+          type="number"
+          className="form-control"
+          required
+        />
+      </div>
+
+      {/* Unit */}
+      <div className="form-group">
+        <label htmlFor="unit">Unit</label>
+        <select
+          name="unit"
+          value={formData.unit}
+          onChange={handleChange}
+          className="form-control"
+          required
         >
-          Submit
-        </button>
-      </form>
-    );
-  }
-}
+          <option></option>
+          <option value="BAM">BAM</option>
+          <option value="$">$</option>
+        </select>
+      </div>
 
-LoanForm = reduxForm({
-  form: "loanForm"
-})(LoanForm);
+      {/* Description */}
+      <div className="form-group">
+        <label htmlFor="description">Description</label>
+        <input
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          type="text"
+          className="form-control"
+          required
+        />
+      </div>
+
+      {/* Submit Button */}
+      <button type="submit" className="btn btn-primary submit-button">
+        Submit
+      </button>
+    </form>
+  );
+};
 
 export default LoanForm;

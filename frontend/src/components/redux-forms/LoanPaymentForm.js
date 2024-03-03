@@ -1,51 +1,81 @@
-import React, { Component } from 'react';
-import { Field, reduxForm } from 'redux-form';
-import DateTimePicker from 'react-widgets/lib/DateTimePicker';
+import React, { useState } from 'react';
 import moment from 'moment';
-import momentLocalizer from 'react-widgets-moment';
 
-moment.locale('en')
-momentLocalizer()
+moment.locale('en');
+// momentLocalizer(moment);
 
-class LoanPaymentForm extends Component {
-    reset = () => {
-        setTimeout(() => {
-            this.props.reset();
-        }, 100)
-    }
-    render() {
-        const renderDateTimePicker = ({ input: { onChange, value }, showTime }) =>
-            <DateTimePicker
-                onChange={onChange}
-                format="DD MMM YYYY"
-                time={showTime}
-                value={!value ? null : new Date(value)}
-            />
+const LoanPaymentForm = ({ addLoanExtraPayment }) => {
+    const [formData, setFormData] = useState({
+        date: '',
+        amount: '',
+        description: ''
+    });
 
-        const { handleSubmit, addLoanExtraPayment } = this.props;
-        return (
-            <form onSubmit={handleSubmit(addLoanExtraPayment)}>
-                <label className="form-title">Loan Payment</label>
-                <div className="form-group">
-                    <label htmlFor="date">Date</label>
-                    <Field name="date" component={renderDateTimePicker} type="text" className="form-control"/>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="amount">Amount</label>
-                    <Field name="amount" component="input" type="number" className="form-control"/>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="description">Description</label>
-                    <Field name="description" component="input" type="text" className="form-control"/>
-                </div>
-                <button type="submit" className="btn btn-primary submit-button" onClick={this.reset}>Submit</button>
-            </form>
-        );
-    }
-}
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
 
-LoanPaymentForm = reduxForm({
-    form: 'loanPaymentForm'
-})(LoanPaymentForm);
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        addLoanExtraPayment(formData);
+        // Clear form data after submission
+        setFormData({
+            date: '',
+            amount: '',
+            description: ''
+        });
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <label className="form-title">Loan Payment</label>
+
+            {/* Date */}
+            <div className="form-group">
+                <label htmlFor="date">Date</label>
+                <input
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    type="date"
+                    className="form-control"
+                />
+            </div>
+
+            {/* Amount */}
+            <div className="form-group">
+                <label htmlFor="amount">Amount</label>
+                <input
+                    name="amount"
+                    value={formData.amount}
+                    onChange={handleChange}
+                    type="number"
+                    className="form-control"
+                />
+            </div>
+
+            {/* Description */}
+            <div className="form-group">
+                <label htmlFor="description">Description</label>
+                <input
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    type="text"
+                    className="form-control"
+                />
+            </div>
+
+            {/* Submit Button */}
+            <button type="submit" className="btn btn-primary submit-button">
+                Submit
+            </button>
+        </form>
+    );
+};
 
 export default LoanPaymentForm;

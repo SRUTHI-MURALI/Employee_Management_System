@@ -1,39 +1,30 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as userActions from '../actions/userActions';
 import PrimaryLayout from "../components/layout/PrimaryLayout";
-import {withRouter} from 'react-router'
+import { useNavigate } from 'react-router-dom';
 
-class PrimaryLayoutContainerComponent extends React.Component {
-    render() {
-        return (
-            <div>
-                <PrimaryLayout loggedUser={this.props.loggedUser}
-                               history={this.props.history}
-                               removeLoggedUser={this.props.actions.removeLoggedUser}
-                />
-            </div>
-        )
-    }
-}
+const PrimaryLayoutContainerComponent = () => {
+    const loggedUser = useSelector(state => state.loggedUser);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-PrimaryLayoutContainerComponent.propTypes = {
-    loggedUser: PropTypes.string,
-    actions: PropTypes.object.isRequired
+    const handleLogout = () => {
+        // Dispatch action to remove logged user
+        dispatch(userActions.removeLoggedUser());
+        // Navigate to login page
+        navigate('/login');
+    };
+
+    return (
+        <div>
+            <PrimaryLayout
+                loggedUser={loggedUser}
+                handleLogout={handleLogout}
+            />
+        </div>
+    );
 };
 
-const mapStateToProps = (state) => {
-    return {loggedUser: state.loggedUser}
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        actions: bindActionCreators(userActions, dispatch)
-    };
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PrimaryLayoutContainerComponent));
-
-
+export default PrimaryLayoutContainerComponent;

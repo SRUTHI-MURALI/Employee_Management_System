@@ -1,37 +1,39 @@
-import React, { Component } from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as userActions from '../actions/userActions';
 import LoginComponent from "../components/login/Login";
+import { useNavigate } from 'react-router-dom';
 
-class LoginContainerComponent extends Component {
-    render() {
-        return (
-            <div>
-                <LoginComponent loggedUser={this.props.loggedUser}
-                                getLoggedUser={this.props.actions.getLoggedUser}
-                                history={this.props.history}
-                                removeLoggedUser={this.props.actions.removeLoggedUser}
-                />
-            </div>
-        )
-    }
-}
+const LoginContainerComponent = () => {
+    const loggedUser = useSelector(state => state.loggedUser);
+    const dispatch = useDispatch();
+    const navigate = useNavigate(); // Get the navigate function from React Router
 
-LoginContainerComponent.propTypes = {
-    loggedUser: PropTypes.string,
-    actions: PropTypes.object.isRequired
+    const getLoggedUser = () => {
+        // Dispatch action to get logged user
+        dispatch(userActions.getLoggedUser());
+    };
+
+    const removeLoggedUser = () => {
+        // Dispatch action to remove logged user
+        dispatch(userActions.removeLoggedUser());
+    };
+
+    return (
+        <div>
+            <LoginComponent
+                loggedUser={loggedUser}
+                getLoggedUser={getLoggedUser}
+                removeLoggedUser={removeLoggedUser}
+                navigate={navigate} // Pass the navigate function to the LoginComponent
+            />
+        </div>
+    );
 };
 
-const mapStateToProps = (state) => {
-    return {loggedUser: state.loggedUser}
-}
+LoginContainerComponent.propTypes = {
+    loggedUser: PropTypes.string
+};
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        actions: bindActionCreators(userActions, dispatch)
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginContainerComponent);
+export default LoginContainerComponent;

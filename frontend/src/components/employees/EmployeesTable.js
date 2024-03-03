@@ -1,106 +1,110 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { XCircle, CheckCircle } from "react-feather";
-import { confirmAlert } from "react-confirm-alert";
-import Link from "react-router-dom/es/Link";
-import * as _ from "lodash";
 import moment from "moment";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { Link } from "react-router-dom";
+import * as _ from "lodash";
 
-class EmployeesTable extends Component {
-  setEmployeeAsInactive = rowNumber => {
-    const { removeEmployee } = this.props;
+const MySwal = withReactContent(Swal);
+
+const EmployeesTable = ({ employees, removeEmployee }) => {
+  const setEmployeeAsInactive = (rowNumber) => {
     const date = moment().format("MM-DD-YYYY"); // end-date
-    confirmAlert({
+    MySwal.fire({
       title: "Set to inactive",
-      message: "Do you want to set this employee as inactive?",
-      confirmLabel: "Confirm",
-      cancelLabel: "Cancel",
-      onConfirm: () => removeEmployee(rowNumber, date)
+      text: "Do you want to set this employee as inactive?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Confirm",
+      cancelButtonText: "Cancel"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeEmployee(rowNumber, date);
+      }
     });
   };
 
-  setEmployeeAsActive = rowNumber => {
-    const { removeEmployee } = this.props;
-    confirmAlert({
+  const setEmployeeAsActive = (rowNumber) => {
+    MySwal.fire({
       title: "Set to active",
-      message: "Do you want to set this employee as active?",
-      confirmLabel: "Confirm",
-      cancelLabel: "Cancel",
-      onConfirm: () => removeEmployee(rowNumber, "")
+      text: "Do you want to set this employee as active?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Confirm",
+      cancelButtonText: "Cancel"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeEmployee(rowNumber, "");
+      }
     });
   };
 
-  render() {
-    const { employees } = this.props;
-    const newOrder = employees.map(emp => {
-      return emp.enddate === "" ? { ...emp, enddate: undefined } : emp;
-    });
+  const newOrder = employees.map(emp => {
+    return emp.enddate === "" ? { ...emp, enddate: undefined } : emp;
+  });
 
-    const sortedEmployees = _.orderBy(
-      newOrder,
-      ["enddate", "name"],
-      ["desc", "asc"]
-    );
+  const sortedEmployees = _.orderBy(
+    newOrder,
+    ["enddate", "name"],
+    ["desc", "asc"]
+  );
 
-    const listEmployees = sortedEmployees.map(item => {
-      return (
-        <tr key={item.jmbg}>
-          <td>
-            <Link to={`/employees/${item.jmbg}`}> {item.name} </Link>{" "}
-          </td>
-          <td>{item.surname}</td>
-          <td>{item.position}</td>
-          <td className="status-column">
-            <i
-              className={`fa fa-circle ${
-                !item.enddate ? "employeeactive" : "employeeinactive"
-              }`}
-            ></i>
-          </td>
-          <td>
-            {!item.enddate && (
-              <a
-                className="table-actions"
-                title="Set the employee as inactive?"
-                style={{ cursor: "pointer" }}
-                onClick={this.setEmployeeAsInactive.bind(this, item.rowNumber)}
-              >
-                <XCircle size="18" />
-              </a>
-            )}
-            {item.enddate && (
-              <a
-                className="table-actions"
-                style={{ cursor: "pointer" }}
-                title="Set the employee as active, again?"
-                onClick={this.setEmployeeAsActive.bind(this, item.rowNumber)}
-              >
-                <CheckCircle size="18" color="lime" />
-              </a>
-            )}
-          </td>
-        </tr>
-      );
-    });
+  const listEmployees = sortedEmployees.map(item => (
+    <tr key={item.jmbg}>
+      <td>
+        <Link to={`/employees/${item.jmbg}`}>{item.name}</Link>
+      </td>
+      <td>{item.surname}</td>
+      <td>{item.position}</td>
+      <td className="status-column">
+        <i
+          className={`fa fa-circle ${
+            !item.enddate ? "employeeactive" : "employeeinactive"
+          }`}
+        ></i>
+      </td>
+      <td>
+        {!item.enddate && (
+          <button
+            className="table-actions"
+            title="Set the employee as inactive?"
+            onClick={() => setEmployeeAsInactive(item.rowNumber)}
+          >
+            <XCircle size="18" />
+          </button>
+        )}
+        {item.enddate && (
+          <button
+            className="table-actions"
+            title="Set the employee as active, again?"
+            onClick={() => setEmployeeAsActive(item.rowNumber)}
+          >
+            <CheckCircle size="18" color="lime" />
+          </button>
+        )}
+      </td>
+    </tr>
+  ));
 
-    return (
-      <div className="portlet-body">
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Surname</th>
-              <th>Position</th>
-              <th className="status-column">Status</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>{listEmployees}</tbody>
-        </table>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="portlet-body">
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Position</th>
+            <th className="status-column">Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>{listEmployees}</tbody>
+      </table>
+    </div>
+  );
+};
 
 EmployeesTable.propTypes = {
   employees: PropTypes.array.isRequired,

@@ -21,4 +21,4 @@ const deleteSalaryContent = async (url, id) => {
     }
 };
 
-export { getSalaryContent, deleteSalaryContent };
+export default { getSalaryContent, deleteSalaryContent };

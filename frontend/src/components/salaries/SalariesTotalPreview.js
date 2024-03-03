@@ -1,11 +1,11 @@
-import PropTypes from "prop-types";
 import React from "react";
-import ReactHTMLTableToExcel from "react-html-table-to-excel";
+import PropTypes from "prop-types";
+// import ReactHTMLTableToExcel from "react-html-table-to-excel";
 
 const SalariesTotalPreview = ({ employeesSalaries }) => {
   const totalNumberOfSalaries = employeesSalaries.length;
   const totalNumberOfPayoneerSalaries = employeesSalaries.filter(
-    obj => obj.isPayoneer
+    (obj) => obj.isPayoneer
   ).length;
   const totalNumberOfHandSalaries =
     totalNumberOfSalaries - totalNumberOfPayoneerSalaries;
@@ -18,16 +18,16 @@ const SalariesTotalPreview = ({ employeesSalaries }) => {
     (total, amount) => total + amount.bankNetSallary,
     0
   );
-  const totalBankSalaries = (totalBankHotMeals + totalBankNetSalaries).toFixed(
-    2
-  );
+  const totalBankSalaries = (
+    totalBankHotMeals + totalBankNetSalaries
+  ).toFixed(2);
 
   const totalBankContributes = employeesSalaries
     .reduce((total, amount) => total + amount.bankContributes, 0)
     .toFixed(2);
 
-  const payoneerSalaries = employeesSalaries.filter(e => e.isPayoneer);
-  const handSalariesSalaries = employeesSalaries.filter(e => !e.isPayoneer);
+  const payoneerSalaries = employeesSalaries.filter((e) => e.isPayoneer);
+  const handSalariesSalaries = employeesSalaries.filter((e) => !e.isPayoneer);
   const totalPayoneerSalaries = payoneerSalaries
     .reduce((total, amount) => total + amount.handTotal, 0)
     .toFixed(2);
@@ -37,18 +37,15 @@ const SalariesTotalPreview = ({ employeesSalaries }) => {
 
   return (
     <div className="portlet-body portlet-body-salaries">
-      <ReactHTMLTableToExcel
+      {/* <ReactHTMLTableToExcel
         id="salaries-total-table-xls-button"
         className="btn btn-hollow plus"
         table="salariesTotalTable"
         filename="Salaries Total Preview"
         sheet="Total Preview"
         buttonText="Download as XLS"
-      />
-      <table
-        className="table table-striped table-responsive"
-        id="salariesTotalTable"
-      >
+      /> */}
+      <table className="table table-striped table-responsive" id="salariesTotalTable">
         <thead>
           <tr>
             <th>Total Salaries</th>
@@ -77,7 +74,7 @@ const SalariesTotalPreview = ({ employeesSalaries }) => {
 };
 
 SalariesTotalPreview.propTypes = {
-  employeesSalaries: PropTypes.array.isRequired
+  employeesSalaries: PropTypes.array.isRequired,
 };
 
 export default SalariesTotalPreview;

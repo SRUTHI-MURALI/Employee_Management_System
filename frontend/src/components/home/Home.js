@@ -372,7 +372,7 @@
 
 
 import React, { useState, useEffect } from "react";
-import { confirmAlert } from "react-confirm-alert";
+
 import { XCircle } from "react-feather";
 import PropTypes from "prop-types";
 import Select from "react-select";

@@ -1,21 +1,14 @@
-import React, {Component} from 'react';
-import { Info } from 'react-feather';
-import { ChevronRight } from "react-feather";
+import React, { useState, useEffect } from 'react';
+import { Info, ChevronRight } from 'react-feather';
 import TabContentComponent from "./TabContentComponent";
 import PropTypes from "prop-types";
 import profileTabItems from '../../../models/profileTabs';
 
-class TabsComponent extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            tabs: profileTabItems,
-            activeTab: {}
-        }
-    }
+const TabsComponent = ({ employeeJMBG }) => {
+    const [tabs, setTabs] = useState(profileTabItems);
+    const [activeTab, setActiveTab] = useState({});
 
-    setTabAsActive = (selectedTab) => {
-        let tabs = Object.assign([], this.state.tabs);
+    const setTabAsActive = (selectedTab) => {
         const updatedTabs = tabs.map(item => {
             if (item.id === selectedTab.id) {
                 item.active = true;
@@ -24,40 +17,37 @@ class TabsComponent extends Component {
             item.active = false;
             return item;
         });
-        const activeTab = updatedTabs.filter(tab => tab.active);
-        this.setState({
-            tabs: updatedTabs,
-            activeTab: Object.assign({}, activeTab[0])
-        });
+        const activeTab = updatedTabs.find(tab => tab.active);
+        setActiveTab(activeTab);
+        setTabs(updatedTabs);
     }
 
-    componentDidMount() {
-        this.setState({
-            activeTab: this.state.tabs[0]
-        })
-    }
+    useEffect(() => {
+        setActiveTab(tabs[0]);
+    }, []);
 
-    render() {
-        const tabs = this.state.tabs.map(item => {
-            return <a className={`list-group-item ${item.active && 'selectedTab'}`} key={item.id}
-                      onClick={() => this.setTabAsActive(item)}>
-                <Info size="18" /> &nbsp;&nbsp;
-                {item.name}
-                <ChevronRight size="18" />
-            </a>
-        });
+    const tabElements = tabs.map(item => (
+        <a
+            key={item.id}
+            className={`list-group-item ${item.active ? 'selectedTab' : ''}`}
+            onClick={() => setTabAsActive(item)}
+        >
+            <Info size="18" /> &nbsp;&nbsp;
+            {item.name}
+            <ChevronRight size="18" />
+        </a>
+    ));
 
-        return (
-            <div>
-                <div className="col-md-4">
-                    <div className="list-group">
-                        {tabs}
-                    </div>
+    return (
+        <div>
+            <div className="col-md-4">
+                <div className="list-group">
+                    {tabElements}
                 </div>
-                <TabContentComponent activeTab={this.state.activeTab} employeeJMBG={this.props.employeeJMBG}/>
             </div>
-        );
-    }
+            <TabContentComponent activeTab={activeTab} employeeJMBG={employeeJMBG} />
+        </div>
+    );
 }
 
 TabsComponent.propTypes = {

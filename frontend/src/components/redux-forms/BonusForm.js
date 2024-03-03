@@ -1,89 +1,100 @@
-import React, { Component } from "react";
-import { Field, reduxForm } from "redux-form";
-import DateTimePicker from "react-widgets/lib/DateTimePicker";
+import React, { useState } from "react";
 import moment from "moment";
-import momentLocalizer from "react-widgets-moment";
+// import momentLocalizer from "react-widgets-moment";
+// momentLocalizer(moment);
 
-moment.locale("en");
-momentLocalizer();
+const BonusForm = ({ addBonus }) => {
+  const [formData, setFormData] = useState({
+    date: "",
+    amount: "",
+    description: "",
+    isRepeating: false
+  });
 
-class BonusForm extends Component {
-  reset = () => {
-    setTimeout(() => {
-      this.props.reset();
-    }, 100);
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: type === "checkbox" ? checked : value
+    }));
   };
-  render() {
-    const renderDateTimePicker = ({ input: { onChange, value }, showTime }) => (
-      <DateTimePicker
-        onChange={onChange}
-        format="DD MMM YYYY"
-        time={showTime}
-        value={!value ? null : new Date(value)}
-      />
-    );
 
-    const { handleSubmit, addBonus } = this.props;
-    return (
-      <form onSubmit={handleSubmit(addBonus)}>
-        <label className="form-title">Bonus</label>
-        <div className="form-group">
-          <label htmlFor="date">Date</label>
-          <Field
-            name="date"
-            component={renderDateTimePicker}
-            type="text"
-            className="form-control"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="amount">Amount</label>
-          <Field
-            name="amount"
-            component="input"
-            type="number"
-            className="form-control"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="description">Description</label>
-          <Field
-            name="description"
-            component="input"
-            type="text"
-            className="form-control"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <Field
-            name="isRepeating"
-            className="form__small--check"
-            component="input"
-            type="checkbox"
-            value="isRepeating"
-            required
-          />
-          <label htmlFor="isRepeating" className="form__small--check__label">
-            Is repeating
-          </label>
-        </div>
-        <button
-          type="submit"
-          className="btn btn-primary submit-button"
-          onClick={this.reset}
-        >
-          Submit
-        </button>
-      </form>
-    );
-  }
-}
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    addBonus(formData);
+    // Clear form data after submission
+    setFormData({
+      date: "",
+      amount: "",
+      description: "",
+      isRepeating: false
+    });
+  };
 
-BonusForm = reduxForm({
-  form: "bonusForm"
-})(BonusForm);
+  return (
+    <form onSubmit={handleSubmit}>
+      <label className="form-title">Bonus</label>
+
+      {/* Date */}
+      <div className="form-group">
+        <label htmlFor="date">Date</label>
+        <input
+          name="date"
+          value={formData.date}
+          onChange={handleChange}
+          type="date"
+          className="form-control"
+          required
+        />
+      </div>
+
+      {/* Amount */}
+      <div className="form-group">
+        <label htmlFor="amount">Amount</label>
+        <input
+          name="amount"
+          value={formData.amount}
+          onChange={handleChange}
+          type="number"
+          className="form-control"
+          required
+        />
+      </div>
+
+      {/* Description */}
+      <div className="form-group">
+        <label htmlFor="description">Description</label>
+        <input
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          type="text"
+          className="form-control"
+          required
+        />
+      </div>
+
+      {/* Is Repeating */}
+      <div className="form-group">
+        <input
+          name="isRepeating"
+          checked={formData.isRepeating}
+          onChange={handleChange}
+          className="form__small--check"
+          type="checkbox"
+          required
+        />
+        <label htmlFor="isRepeating" className="form__small--check__label">
+          Is repeating
+        </label>
+      </div>
+
+      {/* Submit Button */}
+      <button type="submit" className="btn btn-primary submit-button">
+        Submit
+      </button>
+    </form>
+  );
+};
 
 export default BonusForm;
