@@ -19,4 +19,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   </Provider>
 );
 
-initAuth();
+// initAuth();

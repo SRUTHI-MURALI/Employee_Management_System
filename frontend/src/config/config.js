@@ -7,7 +7,7 @@
 // NOTE: Don't foret  similar for the backend -Look into the 'client_secret' JSON file for more info
 // Both of them have to point to the same project. There you'll choose 'Other client' aka Installed
 // Download the file and save inside of the root backend folder under the name 'client_secret.json'
-export const CLIENT_ID = '228839751411-stf4s8gnj3v5adjica38b650g61f2fn0.apps.googleusercontent.com';
+export const CLIENT_ID = '';
 
 export const gapi = window.gapi;
 
@@ -17,7 +17,7 @@ export const baseApiUrl = 'http://localhost:3001/';
 
 // Here we add emails that should have access to the app
 export const emails = [
-"srumurali2018@gmail.com"
+
   // Add or remove emails in order to give or remove access
   // Look inside of the components/Login.js file to activate this option
   // Right now every Google account is able to login (if they grant access to their basic info)

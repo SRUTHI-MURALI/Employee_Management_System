@@ -11,7 +11,7 @@
 // } from "@react-oauth/google";
 // import * as config from "../../config/config";
 
-// const Login = ({ loggedUser, getLoggedUser, removeLoggedUser, history }) => {
+// const Login = () => {
 //   const onSuccess = async (credentialResponse) => {
 //     try {
 //         const idToken = credentialResponse.credential;
@@ -50,13 +50,14 @@
 //     alert(error);
 //   };
 
-//   useEffect(() => {
-//     if (loggedUser != null) {
-//       history.push("/home");
-//     }
-//   }, [loggedUser, history]);
+//   // useEffect(() => {
+//   //   if (loggedUser != null) {
+//   //     history.push("/home");
+//   //   }
+//   // }, [loggedUser, history]);
 
 //   return (
+//     <GoogleOAuthProvider clientId="228839751411-dkvb01mh8cn8pl04tabv6mgdgk7nbfpe.apps.googleusercontent.com">
 //     <div className="container">
 //       <div className="container container__login">
 //         <div className="login__section">
@@ -91,6 +92,7 @@
 //         </div>
 //       </div>
 //     </div>
+//     </GoogleOAuthProvider>
 //   );
 // };
 
@@ -112,7 +114,7 @@ import logo from "../../img/logo.png";
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate hook
 import Auth from "../../helper/auth";
 
-const Login = ({ loggedUser, getLoggedUser, removeLoggedUser }) => {
+const Login = () => {
   const navigate = useNavigate(); // Use useNavigate hook to get navigation function
 
   const onSuccess = async (credentialResponse) => {
@@ -130,14 +132,14 @@ const Login = ({ loggedUser, getLoggedUser, removeLoggedUser }) => {
     alert(error);
   };
 
-  useEffect(() => {
-    if (loggedUser != null) {
-      navigate("/home"); // Use navigate function to redirect
-    }
-  }, [loggedUser, navigate]);
+  // useEffect(() => {
+  //   if (loggedUser != null) {
+  //     navigate("/home"); // Use navigate function to redirect
+  //   }
+  // }, [loggedUser, navigate]);
 
   return (
-    <GoogleOAuthProvider clientId="228839751411-stf4s8gnj3v5adjica38b650g61f2fn0.apps.googleusercontent.com"> {/* Wrap the component with GoogleOAuthProvider */}
+    <GoogleOAuthProvider clientId="228839751411-dkvb01mh8cn8pl04tabv6mgdgk7nbfpe.apps.googleusercontent.com"> {/* Wrap the component with GoogleOAuthProvider */}
       <div className="container">
         <div className="container container__login">
           <div className="login__section">
@@ -149,11 +151,12 @@ const Login = ({ loggedUser, getLoggedUser, removeLoggedUser }) => {
             <br />
             <br />
             <GoogleLogin
-              buttonText="log in with Google"
-              className="btn-primary btn-login"
-              onSuccess={onSuccess}
-              onFailure={onFailure}
-            />
+                    text="continue_with"
+                    onSuccess={onSuccess}
+                    onError={() => {
+                      console.log("Login Failed");
+                    }}
+                  />
             <div className="intro">
               <ul>
                 <li>
@@ -176,11 +179,11 @@ const Login = ({ loggedUser, getLoggedUser, removeLoggedUser }) => {
   );
 };
 
-Login.propTypes = {
-  loggedUser: PropTypes.string,
-  getLoggedUser: PropTypes.func.isRequired,
-  removeLoggedUser: PropTypes.func.isRequired,
-};
+// Login.propTypes = {
+//   loggedUser: PropTypes.string,
+//   getLoggedUser: PropTypes.func.isRequired,
+//   removeLoggedUser: PropTypes.func.isRequired,
+// };
 
 export default Login;
 

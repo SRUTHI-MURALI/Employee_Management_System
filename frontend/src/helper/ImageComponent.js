@@ -1,39 +1,32 @@
-import React, { Component, Fragment } from "react";
-// import Modal from "react-awesome-modal";
+import React, { useState } from "react";
 
-class ImageComponent extends Component {
-  state = { isOpen: false };
+const ImageComponent = (props) => {
+  const [isOpen, setIsOpen] = useState(false);
 
-  handleShowDialog = () => {
-    this.setState(prevState => ({
-      isOpen: !prevState.isOpen
-    }));
+  const handleShowDialog = () => {
+    setIsOpen((prevIsOpen) => !prevIsOpen);
   };
 
-  render() {
-    return (
-      <Fragment>
-        <img
-          style={{ cursor: "pointer" }}
-          src={this.props.img}
-          onClick={this.handleShowDialog}
-          alt={this.props.title}
-        />
-        <Modal
-          visible={this.state.isOpen}
-          effect="fadeInUp"
-          onClickAway={() => this.handleShowDialog()}
-        >
+  return (
+    <>
+      <img
+        style={{ cursor: "pointer" }}
+        src={props.img}
+        onClick={handleShowDialog}
+        alt={props.title}
+      />
+      {isOpen && (
+        <div className="modal" onClick={handleShowDialog}>
           <img
-            className="openImageModal"
-            src={this.props.img}
-            onClick={this.handleShowDialog}
-            alt={this.props.title}
+            className="modal-image"
+            src={props.img}
+            onClick={(e) => e.stopPropagation()}
+            alt={props.title}
           />
-        </Modal>
-      </Fragment>
-    );
-  }
-}
+        </div>
+      )}
+    </>
+  );
+};
 
 export default ImageComponent;
